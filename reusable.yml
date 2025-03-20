@@ -36,7 +36,11 @@ on:
 
 jobs:
   build-and-publish:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] # To accommodate both Linux and Windows environment
 
     steps:
       - name: Checkout source code
@@ -46,6 +50,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Display OS Info
+        run: |
+          echo "Operating System: ${{ runner.os }}"
+          dotnet --info
 
       - name: Restore dependencies
         run: dotnet restore ${{ inputs.project_path }}
